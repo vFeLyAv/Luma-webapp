@@ -171,55 +171,45 @@ function saveRequestData() {
 }
 
 function getRequestDataFromForm() {
-    const { nameInput, ageInput, botherInput, resultInput } = getFormElements();
+    const { nameInput, ageInput, problemInput, goalInput } = getFormElements();
 
     return {
         name: getTrimmedInputValue(nameInput),
         age: getTrimmedInputValue(ageInput),
-        problem: getTrimmedInputValue(botherInput),
-        goal: getTrimmedInputValue(resultInput),
+        problem: getTrimmedInputValue(problemInput),
+        goal: getTrimmedInputValue(goalInput),
         language: currentLanguage
     };
 }
 
 function sendRequestToSpecialist() {
-    const { nameInput, ageInput, botherInput, resultInput } = getFormElements();
-    const name = getTrimmedInputValue(nameInput);
-    const age = getTrimmedInputValue(ageInput);
-    const problem = getTrimmedInputValue(botherInput);
-    const goal = getTrimmedInputValue(resultInput);
+    const name = document.getElementById("nameInput").value.trim();
+    const age = document.getElementById("ageInput").value.trim();
+    const problem = document.getElementById("problemInput").value.trim();
+    const goal = document.getElementById("goalInput").value.trim();
 
     if (!problem || !goal) {
         demoMessage.hidden = false;
-        demoMessage.textContent = requiredRequestFieldsMessage;
+        demoMessage.textContent = "Пожалуйста, заполните, что вас беспокоит и какого результата вы хотите.";
         return;
     }
 
     const payload = {
         type: "wellness_request",
-        name: name,
-        age: age,
-        problem: problem,
-        goal: goal,
+        name,
+        age,
+        problem,
+        goal,
         language: currentLanguage,
         createdAt: new Date().toISOString()
     };
 
-    requestData = {
-        name: name,
-        age: age,
-        problem: problem,
-        goal: goal,
-        language: currentLanguage
-    };
-
-    console.log("Luma payload:", payload);
+    console.log("Luma payload before send:", payload);
 
     if (window.Telegram && window.Telegram.WebApp) {
         window.Telegram.WebApp.sendData(JSON.stringify(payload));
     } else {
-        console.log("Luma demo payload:", payload);
-        alert("Demo mode: Telegram WebApp API is not available. Payload was printed to console.");
+        alert(JSON.stringify(payload, null, 2));
     }
 
     demoMessage.hidden = false;
@@ -230,8 +220,8 @@ function getFormElements() {
     return {
         nameInput: document.querySelector("#nameInput"),
         ageInput: document.querySelector("#ageInput"),
-        botherInput: document.querySelector("#botherInput"),
-        resultInput: document.querySelector("#resultInput")
+        problemInput: document.querySelector("#problemInput"),
+        goalInput: document.querySelector("#goalInput")
     };
 }
 
@@ -292,8 +282,8 @@ function startAnalysis() {
 function resetForm() {
     document.querySelector("#nameInput").value = "";
     document.querySelector("#ageInput").value = "";
-    document.querySelector("#botherInput").value = "";
-    document.querySelector("#resultInput").value = "";
+    document.querySelector("#problemInput").value = "";
+    document.querySelector("#goalInput").value = "";
     requestData = {
         name: "",
         age: "",
