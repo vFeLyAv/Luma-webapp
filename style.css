@@ -620,7 +620,21 @@ textarea {
     width: 100%;
     max-width: 100%;
     flex: 0 0 auto;
-    margin-top: auto;
+    margin-top: 24px;
+}
+
+.form-safe-note {
+    align-items: center;
+    gap: 6px;
+}
+
+.lock-emoji {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    font-size: 13px;
+    line-height: 1;
 }
 
 .analysis-content {
@@ -699,7 +713,17 @@ textarea {
 }
 
 .screen--form {
+    padding-top: calc(20px + env(safe-area-inset-top));
     padding-bottom: calc(22px + env(safe-area-inset-bottom));
+}
+
+.screen--form .form-top {
+    margin-top: 16px;
+}
+
+.screen--form .screen-description,
+.screen--form .request-form {
+    margin-top: 24px;
 }
 
 .success-content {
