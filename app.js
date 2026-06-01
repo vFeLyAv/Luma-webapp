@@ -51,6 +51,7 @@ const languageSelect = document.querySelector("#languageSelect");
 const progressFill = document.querySelector("#progressFill");
 const progressValue = document.querySelector("#progressValue");
 const demoMessage = document.querySelector("#demoMessage");
+const requiredRequestFieldsMessage = "Пожалуйста, заполните, что вас беспокоит и какого результата вы хотите.";
 
 // Telegram injects this object only inside the real Mini App environment.
 if (window.Telegram && window.Telegram.WebApp) {
@@ -170,40 +171,49 @@ function saveRequestData() {
 }
 
 function getRequestDataFromForm() {
-    const nameInput = document.querySelector("#nameInput");
-    const ageInput = document.querySelector("#ageInput");
-    const botherInput = document.querySelector("#botherInput");
-    const resultInput = document.querySelector("#resultInput");
+    const { nameInput, ageInput, botherInput, resultInput } = getFormElements();
 
     return {
-        name: nameInput.value.trim(),
-        age: ageInput.value.trim(),
-        problem: botherInput.value.trim(),
-        goal: resultInput.value.trim(),
+        name: getTrimmedInputValue(nameInput),
+        age: getTrimmedInputValue(ageInput),
+        problem: getTrimmedInputValue(botherInput),
+        goal: getTrimmedInputValue(resultInput),
         language: currentLanguage
     };
 }
 
 function sendRequestToSpecialist() {
-    requestData = getRequestDataFromForm();
+    const { nameInput, ageInput, botherInput, resultInput } = getFormElements();
+    const name = getTrimmedInputValue(nameInput);
+    const age = getTrimmedInputValue(ageInput);
+    const problem = getTrimmedInputValue(botherInput);
+    const goal = getTrimmedInputValue(resultInput);
 
-    if (!requestData.problem || !requestData.goal) {
+    if (!problem || !goal) {
         demoMessage.hidden = false;
-        demoMessage.textContent = translate("requiredRequestFieldsMessage");
+        demoMessage.textContent = requiredRequestFieldsMessage;
         return;
     }
 
     const payload = {
         type: "wellness_request",
-        name: requestData.name,
-        age: requestData.age,
-        problem: requestData.problem,
-        goal: requestData.goal,
-        language: requestData.language,
+        name: name,
+        age: age,
+        problem: problem,
+        goal: goal,
+        language: currentLanguage,
         createdAt: new Date().toISOString()
     };
 
-    console.log(payload);
+    requestData = {
+        name: name,
+        age: age,
+        problem: problem,
+        goal: goal,
+        language: currentLanguage
+    };
+
+    console.log("Luma payload:", payload);
 
     if (window.Telegram && window.Telegram.WebApp) {
         window.Telegram.WebApp.sendData(JSON.stringify(payload));
@@ -214,6 +224,19 @@ function sendRequestToSpecialist() {
 
     demoMessage.hidden = false;
     demoMessage.textContent = "Заявка отправлена специалисту.";
+}
+
+function getFormElements() {
+    return {
+        nameInput: document.querySelector("#nameInput"),
+        ageInput: document.querySelector("#ageInput"),
+        botherInput: document.querySelector("#botherInput"),
+        resultInput: document.querySelector("#resultInput")
+    };
+}
+
+function getTrimmedInputValue(input) {
+    return input ? input.value.trim() : "";
 }
 
 function connectCounters() {
