@@ -794,6 +794,636 @@ textarea {
     line-height: 1.45;
 }
 
+.screen--specialist {
+    align-items: stretch;
+    padding: calc(22px + env(safe-area-inset-top)) 18px calc(24px + env(safe-area-inset-bottom));
+    background:
+        radial-gradient(circle at 14% 0%, rgba(255, 255, 255, 0.64) 0 118px, transparent 119px),
+        linear-gradient(180deg, rgba(255, 250, 241, 0.92) 0%, rgba(246, 239, 224, 0.98) 100%);
+}
+
+.specialist-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 58px;
+}
+
+.specialist-brand-mark {
+    position: relative;
+    width: 58px;
+    height: 44px;
+}
+
+.specialist-mark-sun {
+    position: absolute;
+    right: 7px;
+    top: 4px;
+    width: 31px;
+    height: 31px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #FFD17B 0%, #F3A448 100%);
+}
+
+.specialist-mark-sun::before {
+    content: "";
+    position: absolute;
+    left: 12px;
+    top: -12px;
+    width: 3px;
+    height: 9px;
+    border-radius: 999px;
+    background: rgba(242, 140, 60, 0.42);
+    box-shadow:
+        16px 8px 0 rgba(242, 140, 60, 0.34),
+        -14px 8px 0 rgba(242, 140, 60, 0.34);
+}
+
+.specialist-mark-cloud {
+    position: absolute;
+    left: 5px;
+    bottom: 7px;
+    width: 42px;
+    height: 19px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #FFFFFF 0%, #F5E3C4 100%);
+    box-shadow: 0 8px 18px rgba(126, 92, 54, 0.12);
+}
+
+.specialist-mark-cloud::before,
+.specialist-mark-cloud::after {
+    content: "";
+    position: absolute;
+    bottom: 5px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #FFFFFF 0%, #F7E9D1 100%);
+}
+
+.specialist-mark-cloud::before {
+    left: 5px;
+    width: 20px;
+    height: 20px;
+}
+
+.specialist-mark-cloud::after {
+    left: 18px;
+    width: 25px;
+    height: 25px;
+}
+
+.specialist-icon-button,
+.specialist-back-button {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    color: #7C5739;
+    border-radius: 16px;
+    background: rgba(255, 249, 237, 0.68);
+}
+
+.specialist-icon-button .ui-icon,
+.specialist-back-button .ui-icon {
+    width: 22px;
+    height: 22px;
+}
+
+.specialist-title-block {
+    margin-top: 10px;
+}
+
+.specialist-title-block h1 {
+    margin: 0;
+    color: var(--text);
+    font-size: 26px;
+    line-height: 1.12;
+    font-weight: 750;
+    letter-spacing: 0;
+}
+
+.specialist-title-block p {
+    margin: 6px 0 0;
+    color: var(--muted-text);
+    font-size: 17px;
+    line-height: 1.35;
+}
+
+.specialist-api-card,
+.specialist-request-card,
+.specialist-info-card,
+.specialist-reply-card,
+.specialist-state-card {
+    border: 1px solid rgba(137, 122, 116, 0.14);
+    border-radius: 22px;
+    background: rgba(255, 250, 241, 0.84);
+    box-shadow: 0 14px 30px rgba(82, 61, 42, 0.08);
+}
+
+.specialist-api-card {
+    margin-top: 18px;
+    padding: 16px;
+}
+
+.specialist-api-heading {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    gap: 14px;
+    align-items: center;
+}
+
+.specialist-api-heading strong {
+    display: block;
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.25;
+}
+
+.specialist-api-heading small {
+    display: block;
+    margin-top: 5px;
+    color: var(--muted-text);
+    font-size: 13px;
+    line-height: 1.35;
+}
+
+.specialist-api-icon {
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    color: #B87543;
+    border-radius: 50%;
+    background: #FFF0DB;
+}
+
+.specialist-api-icon .ui-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.specialist-api-fields {
+    display: grid;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.specialist-settings-field {
+    display: grid;
+    gap: 6px;
+}
+
+.specialist-settings-field span {
+    color: var(--muted-text);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.specialist-settings-field input,
+.specialist-status-select {
+    width: 100%;
+    min-height: 44px;
+    padding: 0 13px;
+    color: var(--text);
+    border: 1px solid rgba(137, 122, 116, 0.18);
+    border-radius: 14px;
+    outline: 0;
+    background: rgba(255, 255, 255, 0.52);
+}
+
+.specialist-secondary-action,
+.specialist-outline-action {
+    width: 100%;
+    min-height: 50px;
+    border-radius: 17px;
+    color: var(--primary);
+    background: rgba(255, 249, 237, 0.78);
+    border: 1px solid rgba(242, 140, 60, 0.42);
+    font-weight: 700;
+}
+
+.specialist-primary-action {
+    width: 100%;
+    min-height: 58px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-radius: 19px;
+    color: #FFFFFF;
+    background: linear-gradient(180deg, #FAA64E 0%, var(--primary) 100%);
+    box-shadow: 0 14px 28px rgba(242, 140, 60, 0.26);
+    font-size: 17px;
+    font-weight: 750;
+}
+
+.specialist-primary-action .ui-icon,
+.specialist-outline-action .ui-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.specialist-toast {
+    margin: 12px 0 0;
+    padding: 10px 12px;
+    color: #7C5739;
+    border-radius: 14px;
+    background: rgba(255, 240, 219, 0.86);
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.specialist-request-list {
+    display: grid;
+    gap: 13px;
+    margin-top: 14px;
+    padding-bottom: 10px;
+}
+
+.specialist-request-card {
+    display: grid;
+    gap: 13px;
+    padding: 16px;
+}
+
+.specialist-request-top,
+.specialist-client-line,
+.specialist-card-action-row,
+.specialist-meta-row {
+    display: flex;
+    align-items: center;
+}
+
+.specialist-request-top,
+.specialist-card-action-row,
+.specialist-meta-row {
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.specialist-request-number {
+    color: #A06B45;
+    font-size: 14px;
+    font-weight: 750;
+}
+
+.specialist-status-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 30px;
+    padding: 0 12px;
+    color: #B86728;
+    border-radius: 999px;
+    background: #FFF0DB;
+    font-size: 12px;
+    font-weight: 750;
+    white-space: nowrap;
+}
+
+.specialist-status-chip--in-progress {
+    color: #B37A25;
+    background: #FFF1C9;
+}
+
+.specialist-status-chip--done {
+    color: #4E8A58;
+    background: #EAF6E7;
+}
+
+.specialist-status-chip--cancelled {
+    color: #9A635B;
+    background: #F8E8E4;
+}
+
+.specialist-client-line {
+    gap: 12px;
+    min-width: 0;
+}
+
+.specialist-avatar {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    display: grid;
+    place-items: center;
+    color: #B87543;
+    border-radius: 50%;
+    background: #FFE9C9;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.specialist-client-text {
+    min-width: 0;
+}
+
+.specialist-client-text strong {
+    display: block;
+    overflow: hidden;
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.specialist-client-text small,
+.specialist-detail-title p {
+    display: block;
+    margin-top: 3px;
+    color: var(--muted-text);
+    font-size: 13px;
+    line-height: 1.3;
+}
+
+.specialist-preview {
+    margin: 0;
+    color: #6E5D55;
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.specialist-open-button {
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 0 13px 0 16px;
+    color: var(--primary);
+    border-radius: 999px;
+    background: #FFF0DB;
+    font-size: 13px;
+    font-weight: 750;
+    white-space: nowrap;
+}
+
+.specialist-open-button .ui-icon {
+    width: 17px;
+    height: 17px;
+}
+
+.specialist-detail-top {
+    display: grid;
+    grid-template-columns: 44px 1fr 44px;
+    gap: 8px;
+    align-items: center;
+    min-height: 56px;
+}
+
+.specialist-detail-title {
+    min-width: 0;
+    text-align: center;
+}
+
+.specialist-detail-title h1 {
+    margin: 0;
+    overflow: hidden;
+    color: var(--text);
+    font-size: 20px;
+    line-height: 1.2;
+    font-weight: 750;
+    letter-spacing: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.specialist-detail-content,
+.specialist-reply-content {
+    display: grid;
+    gap: 14px;
+    margin-top: 16px;
+    padding-bottom: 8px;
+}
+
+.specialist-detail-status-row {
+    display: flex;
+    justify-content: center;
+}
+
+.specialist-info-card,
+.specialist-reply-card {
+    padding: 17px;
+}
+
+.specialist-section-heading {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin-bottom: 13px;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 750;
+}
+
+.specialist-section-heading .ui-icon {
+    width: 21px;
+    height: 21px;
+    color: #B87543;
+}
+
+.specialist-data-grid {
+    display: grid;
+    gap: 14px;
+}
+
+.specialist-data-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: start;
+    color: #5D4B42;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.specialist-data-row span:first-child {
+    color: var(--muted-text);
+}
+
+.specialist-data-row strong {
+    max-width: 190px;
+    color: var(--text);
+    font-weight: 650;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+.specialist-body-text {
+    margin: 0;
+    color: #4B3C34;
+    font-size: 15px;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+}
+
+.specialist-status-form {
+    display: grid;
+    gap: 12px;
+    margin-top: 2px;
+}
+
+.specialist-detail-actions {
+    display: grid;
+    gap: 12px;
+}
+
+.specialist-summary-card {
+    display: grid;
+    gap: 11px;
+}
+
+.specialist-summary-card .specialist-preview {
+    color: var(--muted-text);
+}
+
+.specialist-reply-card textarea {
+    min-height: 248px;
+    padding: 15px;
+    color: var(--text);
+    border: 1px solid rgba(137, 122, 116, 0.18);
+    border-radius: 17px;
+    background: rgba(255, 255, 255, 0.46);
+    line-height: 1.55;
+}
+
+.specialist-reply-counter {
+    margin: 7px 2px 0;
+    color: var(--muted-text);
+    font-size: 12px;
+    text-align: right;
+}
+
+.specialist-reply-actions {
+    display: grid;
+    gap: 12px;
+}
+
+.specialist-outline-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--primary);
+}
+
+.specialist-state {
+    margin-top: 14px;
+}
+
+.specialist-state-card {
+    display: grid;
+    place-items: center;
+    min-height: 390px;
+    padding: 28px 22px;
+    text-align: center;
+}
+
+.specialist-state-card h2 {
+    margin: 28px 0 0;
+    color: var(--text);
+    font-size: 24px;
+    line-height: 1.2;
+    letter-spacing: 0;
+}
+
+.specialist-state-card p {
+    max-width: 280px;
+    margin: 13px auto 0;
+    color: var(--muted-text);
+    font-size: 15px;
+    line-height: 1.45;
+}
+
+.specialist-state-card .specialist-secondary-action {
+    margin-top: 22px;
+}
+
+.specialist-empty-art {
+    position: relative;
+    width: 170px;
+    height: 126px;
+}
+
+.specialist-empty-sun {
+    position: absolute;
+    right: 18px;
+    top: 7px;
+    width: 86px;
+    height: 86px;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 35% 30%, rgba(255, 229, 168, 0.9) 0 7px, transparent 8px),
+        linear-gradient(145deg, #FFD47D 0%, #F2A146 100%);
+    box-shadow: 0 16px 34px rgba(242, 140, 60, 0.18);
+}
+
+.specialist-empty-sun::before {
+    content: "";
+    position: absolute;
+    left: 39px;
+    top: -35px;
+    width: 5px;
+    height: 23px;
+    border-radius: 999px;
+    background: rgba(246, 199, 137, 0.78);
+    box-shadow:
+        54px 30px 0 rgba(246, 199, 137, 0.72),
+        -47px 30px 0 rgba(246, 199, 137, 0.72);
+}
+
+.specialist-empty-cloud {
+    position: absolute;
+    left: 5px;
+    bottom: 18px;
+    width: 143px;
+    height: 56px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #FFFFFF 0%, #F5E4C8 100%);
+    box-shadow: 0 18px 32px rgba(126, 92, 54, 0.12);
+}
+
+.specialist-empty-cloud::before,
+.specialist-empty-cloud::after {
+    content: "";
+    position: absolute;
+    bottom: 11px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #FFFFFF 0%, #F7E9D1 100%);
+}
+
+.specialist-empty-cloud::before {
+    left: 12px;
+    width: 56px;
+    height: 56px;
+}
+
+.specialist-empty-cloud::after {
+    left: 55px;
+    width: 72px;
+    height: 72px;
+}
+
+.specialist-state-dots {
+    display: flex;
+    justify-content: center;
+    gap: 13px;
+    margin-top: 28px;
+}
+
+.specialist-state-dots span {
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    background: var(--primary-soft);
+    opacity: 0.6;
+}
+
+.specialist-state-dots span:first-child {
+    background: var(--primary);
+    opacity: 1;
+}
+
 [dir="rtl"] .screen,
 [dir="rtl"] input,
 [dir="rtl"] textarea,

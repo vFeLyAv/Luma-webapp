@@ -37,6 +37,33 @@
                 <path d="M6.6 10.6h10.8a1.7 1.7 0 0 1 1.7 1.7v6.1a1.7 1.7 0 0 1-1.7 1.7H6.6a1.7 1.7 0 0 1-1.7-1.7v-6.1a1.7 1.7 0 0 1 1.7-1.7Z"></path>
                 <path d="M12 14.7v1.9"></path>
             </symbol>
+            <symbol id="icon-arrow-left" viewBox="0 0 24 24">
+                <path d="M15.7 5.2 8.9 12l6.8 6.8"></path>
+                <path d="M9.6 12h10.1"></path>
+            </symbol>
+            <symbol id="icon-chevron-right" viewBox="0 0 24 24">
+                <path d="m9.2 5.4 6.5 6.6-6.5 6.6"></path>
+            </symbol>
+            <symbol id="icon-link" viewBox="0 0 24 24">
+                <path d="M9.4 14.6a4.2 4.2 0 0 1 0-5.9l2-2a4.2 4.2 0 0 1 5.9 5.9l-1.1 1.1"></path>
+                <path d="M14.6 9.4a4.2 4.2 0 0 1 0 5.9l-2 2a4.2 4.2 0 0 1-5.9-5.9l1.1-1.1"></path>
+            </symbol>
+            <symbol id="icon-bell" viewBox="0 0 24 24">
+                <path d="M17.8 9.9a5.8 5.8 0 0 0-11.6 0c0 6.1-2 6.7-2 6.7h15.6s-2-.6-2-6.7Z"></path>
+                <path d="M9.8 19.3a2.5 2.5 0 0 0 4.4 0"></path>
+            </symbol>
+            <symbol id="icon-edit" viewBox="0 0 24 24">
+                <path d="M12.2 20.2H5.1a1.4 1.4 0 0 1-1.4-1.4v-7.1"></path>
+                <path d="M14.1 5.2 18.8 10"></path>
+                <path d="M19.8 4.2a2.1 2.1 0 0 1 0 3l-9.5 9.5-4.1 1.1 1.1-4.1 9.5-9.5a2.1 2.1 0 0 1 3 0Z"></path>
+            </symbol>
+            <symbol id="icon-send" viewBox="0 0 24 24">
+                <path d="m21 3-9.6 18-2-8.4L3 9.8 21 3Z"></path>
+                <path d="m9.4 12.6 5.2-5.2"></path>
+            </symbol>
+            <symbol id="icon-star" viewBox="0 0 24 24">
+                <path d="m12 3.7 2.5 5.1 5.6.8-4 3.9.9 5.5-5-2.6L7 19l.9-5.5-4-3.9 5.6-.8L12 3.7Z"></path>
+            </symbol>
         </svg>
         <section class="screen screen--splash is-active" data-screen="splash">
             <div class="splash-content">
@@ -238,6 +265,91 @@
                     <p class="demo-message" id="demoMessage" hidden data-i18n="demoMessage"></p>
                 </div>
             </div>
+        </section>
+
+        <section class="screen screen--specialist specialist-dashboard" data-screen="specialist-dashboard">
+            <header class="specialist-hero">
+                <div class="specialist-brand-mark" aria-hidden="true">
+                    <span class="specialist-mark-sun"></span>
+                    <span class="specialist-mark-cloud"></span>
+                </div>
+                <button class="specialist-icon-button" id="specialistRefreshIconButton" type="button" aria-label="Refresh requests">
+                    <svg class="ui-icon" aria-hidden="true" focusable="false">
+                        <use href="#icon-bell"></use>
+                    </svg>
+                </button>
+            </header>
+
+            <div class="specialist-title-block">
+                <h1>Specialist Dashboard</h1>
+                <p>Client requests</p>
+            </div>
+
+            <section class="specialist-api-card" aria-label="API and integration settings">
+                <div class="specialist-api-heading">
+                    <span class="specialist-api-icon" aria-hidden="true">
+                        <svg class="ui-icon" focusable="false">
+                            <use href="#icon-link"></use>
+                        </svg>
+                    </span>
+                    <span>
+                        <strong>API &amp; Integration</strong>
+                        <small>Connect your API and manage integration settings.</small>
+                    </span>
+                </div>
+
+                <div class="specialist-api-fields">
+                    <label class="specialist-settings-field">
+                        <span>API URL</span>
+                        <input id="specialistApiUrlInput" type="url" autocomplete="off" spellcheck="false" value="http://127.0.0.1:8000">
+                    </label>
+                    <label class="specialist-settings-field">
+                        <span>Admin key</span>
+                        <input id="specialistAdminKeyInput" type="password" autocomplete="off" placeholder="X-Luma-Admin-Key">
+                    </label>
+                    <button class="specialist-secondary-action" id="specialistRefreshButton" type="button">Refresh</button>
+                </div>
+            </section>
+
+            <p class="specialist-toast" id="specialistToast" hidden></p>
+            <div class="specialist-state" id="specialistListState" hidden></div>
+            <div class="specialist-request-list" id="specialistRequestList"></div>
+        </section>
+
+        <section class="screen screen--specialist specialist-detail" data-screen="specialist-detail">
+            <header class="specialist-detail-top">
+                <button class="specialist-back-button" id="specialistDetailBackButton" type="button" aria-label="Back">
+                    <svg class="ui-icon" aria-hidden="true" focusable="false">
+                        <use href="#icon-arrow-left"></use>
+                    </svg>
+                </button>
+                <div class="specialist-detail-title">
+                    <h1 id="specialistDetailTitle">Request</h1>
+                    <p id="specialistDetailSubtitle"></p>
+                </div>
+                <span></span>
+            </header>
+
+            <p class="specialist-toast" id="specialistDetailToast" hidden></p>
+            <div class="specialist-detail-content" id="specialistDetailContent"></div>
+        </section>
+
+        <section class="screen screen--specialist specialist-reply" data-screen="specialist-reply">
+            <header class="specialist-detail-top">
+                <button class="specialist-back-button" id="specialistReplyBackButton" type="button" aria-label="Back">
+                    <svg class="ui-icon" aria-hidden="true" focusable="false">
+                        <use href="#icon-arrow-left"></use>
+                    </svg>
+                </button>
+                <div class="specialist-detail-title">
+                    <h1 id="specialistReplyTitle">Reply</h1>
+                    <p id="specialistReplySubtitle"></p>
+                </div>
+                <span></span>
+            </header>
+
+            <p class="specialist-toast" id="specialistReplyToast" hidden></p>
+            <div class="specialist-reply-content" id="specialistReplyContent"></div>
         </section>
     </main>
 </body>
