@@ -50,6 +50,23 @@ button:active {
     transform: translateY(1px);
 }
 
+.icon-sprite {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.ui-icon {
+    display: block;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
 .app-shell {
     position: relative;
     width: 100%;
@@ -494,25 +511,15 @@ button:active {
     text-align: center;
 }
 
-.lock-mark {
-    position: relative;
-    width: 10px;
-    height: 9px;
-    flex: 0 0 10px;
-    border: 1.7px solid var(--muted-text);
-    border-radius: 2px;
+.safe-note > span {
+    min-width: 0;
 }
 
-.lock-mark::before {
-    content: "";
-    position: absolute;
-    left: 1.4px;
-    top: -7px;
-    width: 7px;
-    height: 7px;
-    border: 1.7px solid var(--muted-text);
-    border-bottom: 0;
-    border-radius: 8px 8px 0 0;
+.safe-note-icon {
+    width: 15px;
+    height: 15px;
+    color: var(--muted-text);
+    stroke-width: 1.85;
 }
 
 .form-top {
@@ -570,9 +577,10 @@ button:active {
 }
 
 .field-icon {
+    width: 23px;
+    height: 23px;
     color: #6B4F3C;
-    font-size: 25px;
-    line-height: 1.1;
+    margin-top: 1px;
 }
 
 .field-body {
@@ -625,16 +633,6 @@ textarea {
 
 .form-safe-note {
     align-items: center;
-    gap: 6px;
-}
-
-.lock-emoji {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex: 0 0 auto;
-    font-size: 13px;
-    line-height: 1;
 }
 
 .analysis-content {

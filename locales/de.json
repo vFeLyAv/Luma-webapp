@@ -26,5 +26,6 @@
   "successDescription": "Deine Anfrage ist bereit, an eine Fachperson gesendet zu werden.",
   "sendButton": "An Fachperson senden",
   "againButton": "Neu starten",
-  "demoMessage": "Das ist vorerst eine Demo. Später wird die Anfrage an eine Fachperson gesendet."
+  "demoMessage": "Das ist vorerst eine Demo. Später wird die Anfrage an eine Fachperson gesendet.",
+  "requiredRequestFieldsMessage": "Bitte geben Sie an, was Sie belastet und welches Ergebnis Sie erreichen möchten."
 }

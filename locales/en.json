@@ -26,5 +26,6 @@
   "successDescription": "Your request is ready to be sent to a specialist.",
   "sendButton": "Send to specialist",
   "againButton": "Start again",
-  "demoMessage": "This is a demo for now. Later the request will be sent to a specialist."
+  "demoMessage": "This is a demo for now. Later the request will be sent to a specialist.",
+  "requiredRequestFieldsMessage": "Please fill in what bothers you and what result you want."
 }
