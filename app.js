@@ -37,6 +37,13 @@ const fallbackTranslations = {
 let currentLanguage = defaultLanguage;
 let currentTranslations = fallbackTranslations;
 let progressAnimationId = null;
+let requestData = {
+    name: "",
+    age: "",
+    problem: "",
+    goal: "",
+    language: defaultLanguage
+};
 
 const screens = document.querySelectorAll(".screen");
 const languageSelect = document.querySelector("#languageSelect");
@@ -137,13 +144,13 @@ function connectButtons() {
     });
 
     document.querySelector("#prepareButton").addEventListener("click", () => {
+        saveRequestData();
         showScreen("analysis");
         startAnalysis();
     });
 
     document.querySelector("#sendButton").addEventListener("click", () => {
-        demoMessage.hidden = false;
-        demoMessage.textContent = translate("demoMessage");
+        sendRequestToSpecialist();
     });
 
     document.querySelector("#againButton").addEventListener("click", () => {
@@ -155,6 +162,38 @@ function connectButtons() {
     languageSelect.addEventListener("change", (event) => {
         setLanguage(event.target.value);
     });
+}
+
+function saveRequestData() {
+    requestData = {
+        name: document.querySelector("#nameInput").value.trim(),
+        age: document.querySelector("#ageInput").value.trim(),
+        problem: document.querySelector("#botherInput").value.trim(),
+        goal: document.querySelector("#resultInput").value.trim(),
+        language: currentLanguage
+    };
+}
+
+function sendRequestToSpecialist() {
+    const payload = {
+        type: "wellness_request",
+        name: requestData.name,
+        age: requestData.age,
+        problem: requestData.problem,
+        goal: requestData.goal,
+        language: requestData.language,
+        createdAt: new Date().toISOString()
+    };
+
+    if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.sendData(JSON.stringify(payload));
+    } else {
+        console.log("Luma demo payload:", payload);
+        alert("Demo mode: Telegram WebApp API is not available. Payload was printed to console.");
+    }
+
+    demoMessage.hidden = false;
+    demoMessage.textContent = "Заявка отправлена специалисту.";
 }
 
 function connectCounters() {
@@ -212,6 +251,13 @@ function resetForm() {
     document.querySelector("#ageInput").value = "";
     document.querySelector("#botherInput").value = "";
     document.querySelector("#resultInput").value = "";
+    requestData = {
+        name: "",
+        age: "",
+        problem: "",
+        goal: "",
+        language: currentLanguage
+    };
 
     document.querySelectorAll("[data-counter-for]").forEach((counter) => {
         counter.textContent = "0/300";
