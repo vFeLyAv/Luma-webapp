@@ -476,6 +476,7 @@ function createSpecialistRequestCard(request) {
     const clientText = createElement("span", "specialist-client-text");
     const name = createElement("strong", "", getClientName(request));
     const meta = createElement("small", "", formatClientMeta(request));
+    const telegram = createElement("small", "specialist-telegram-preview", getTelegramContactText(request));
     const preview = createElement("p", "specialist-preview", truncateText(getConcernText(request), 92));
     const actionRow = createElement("div", "specialist-card-action-row");
     const spacer = createElement("span", "");
@@ -487,7 +488,7 @@ function createSpecialistRequestCard(request) {
     openButton.addEventListener("click", () => openSpecialistRequest(requestId));
 
     topRow.append(number, statusChip);
-    clientText.append(name, meta);
+    clientText.append(name, meta, telegram);
     clientLine.append(avatar, clientText);
     actionRow.append(spacer, openButton);
     card.append(topRow, clientLine, preview, actionRow);
@@ -543,6 +544,7 @@ function renderRequestDetail(request) {
         createClientInformationCard(request),
         createTextInfoCard("icon-heart", "What bothers the client", getConcernText(request)),
         createTextInfoCard("icon-star", "Desired result", getGoalText(request)),
+        createTelegramProfileCard(request),
         createMetaInfoCard(request),
         createStatusControlCard(requestId, status),
         createDetailActionCard(request)
@@ -583,13 +585,38 @@ function createTextInfoCard(iconId, title, text) {
 
 function createMetaInfoCard(request) {
     const card = createElement("section", "specialist-info-card");
+    const heading = createSectionHeading("icon-link", "Request meta");
     const grid = createElement("div", "specialist-data-grid");
 
     grid.append(
-        createDataRow("Date created", formatCreatedAt(request)),
-        createDataRow("Telegram User ID", getTelegramUserId(request))
+        createDataRow("Date created", formatCreatedAt(request))
     );
-    card.append(grid);
+    card.append(heading, grid);
+
+    return card;
+}
+
+function createTelegramProfileCard(request) {
+    const card = createElement("section", "specialist-info-card");
+    const grid = createElement("div", "specialist-data-grid");
+    const telegramLink = getTelegramProfileLink(request);
+
+    grid.append(
+        createDataRow("ID", getTelegramUserId(request)),
+        createDataRow("Username", getTelegramUsername(request)),
+        createDataRow("Telegram name", getTelegramName(request))
+    );
+    card.append(createSectionHeading("icon-link", "Telegram profile"), grid);
+
+    if (telegramLink) {
+        const link = createElement("a", "specialist-outline-action specialist-telegram-link", "Open Telegram");
+
+        link.href = telegramLink;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.prepend(createSvgUse("icon-link"));
+        card.append(link);
+    }
 
     return card;
 }
@@ -643,17 +670,14 @@ async function updateRequestStatus(requestId, status) {
             method: "PATCH",
             body: JSON.stringify({ status })
         });
-        const updatedRequest = extractSingleRequestFromPayload(payload) || {
-            ...specialistState.currentRequest,
-            status
-        };
+        const updatedRequest = mergeSpecialistRequestUpdate(payload, { status });
 
         specialistState.currentRequest = updatedRequest;
         upsertSpecialistRequest(updatedRequest);
         renderRequestDetail(updatedRequest);
-        showSpecialistToast(specialistElements.detailToast, "Status updated");
+        showSpecialistToast(specialistElements.detailToast, "\u0421\u0442\u0430\u0442\u0443\u0441 \u043e\u0431\u043d\u043e\u0432\u043b\u0451\u043d");
     } catch (error) {
-        showSpecialistToast(specialistElements.detailToast, "Could not update status. Check the API and try again.");
+        showSpecialistToast(specialistElements.detailToast, "\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u043e\u0431\u043d\u043e\u0432\u0438\u0442\u044c \u0441\u0442\u0430\u0442\u0443\u0441. \u041f\u0440\u043e\u0432\u0435\u0440\u044c\u0442\u0435 API \u0438 \u043f\u043e\u043f\u0440\u043e\u0431\u0443\u0439\u0442\u0435 \u0435\u0449\u0451.");
     }
 }
 
@@ -699,7 +723,7 @@ function renderReplyScreen(request) {
     sendButton.type = "button";
     sendButton.disabled = !requestId;
     sendButton.prepend(createSvgUse("icon-send"));
-    sendButton.addEventListener("click", () => sendSpecialistReply(requestId, textarea.value));
+    sendButton.addEventListener("click", () => sendSpecialistReply(requestId, textarea, counter));
 
     draftButton.type = "button";
     draftButton.prepend(createSvgUse("icon-edit"));
@@ -713,8 +737,8 @@ function renderReplyScreen(request) {
     specialistElements.replyContent.append(summary, card, actions);
 }
 
-async function sendSpecialistReply(requestId, replyText) {
-    const reply = String(replyText || "").trim();
+async function sendSpecialistReply(requestId, textarea, counter) {
+    const reply = String(textarea && textarea.value ? textarea.value : "").trim();
 
     if (!reply) {
         showSpecialistToast(specialistElements.replyToast, "Write a reply before sending.");
@@ -722,23 +746,21 @@ async function sendSpecialistReply(requestId, replyText) {
     }
 
     try {
-        // The current API stores the reply and status only; it does not send the reply to the client through Telegram yet.
         const payload = await fetchSpecialistJson(`/requests/${encodeURIComponent(requestId)}/reply`, {
             method: "POST",
             body: JSON.stringify({ reply })
         });
-        const updatedRequest = extractSingleRequestFromPayload(payload) || {
-            ...specialistState.currentRequest,
-            reply
-        };
+        const doneRequest = mergeSpecialistRequestUpdate(payload, { reply, status: "done" });
 
         localStorage.removeItem(getReplyDraftKey(requestId));
-        specialistState.currentRequest = updatedRequest;
-        upsertSpecialistRequest(updatedRequest);
-        renderRequestDetail(updatedRequest);
-        showSpecialistToast(specialistElements.detailToast, "Reply saved");
+        textarea.value = "";
+        updateSpecialistReplyCounter(counter, 0);
+        specialistState.currentRequest = doneRequest;
+        upsertSpecialistRequest(doneRequest);
+        renderRequestDetail(doneRequest);
+        showSpecialistToast(specialistElements.detailToast, "\u041e\u0442\u0432\u0435\u0442 \u043e\u0442\u043f\u0440\u0430\u0432\u043b\u0435\u043d \u043a\u043b\u0438\u0435\u043d\u0442\u0443");
     } catch (error) {
-        showSpecialistToast(specialistElements.replyToast, "Could not save reply. Check the API and try again.");
+        showSpecialistToast(specialistElements.replyToast, "\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u043e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u043e\u0442\u0432\u0435\u0442. \u041f\u0440\u043e\u0432\u0435\u0440\u044c\u0442\u0435 API \u0438 \u043f\u043e\u043f\u0440\u043e\u0431\u0443\u0439\u0442\u0435 \u0435\u0449\u0451.");
     }
 }
 
@@ -831,8 +853,8 @@ function renderSpecialistListState(type, errorMessage = "") {
 
     if (type === "error") {
         specialistElements.listState.append(createSpecialistStateCard({
-            title: "\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044c \u0437\u0430\u044f\u0432\u043a\u0438",
-            subtitle: `\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044c \u0437\u0430\u044f\u0432\u043a\u0438: ${errorMessage || "unknown error"}`,
+            title: "\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u043f\u043e\u0434\u043a\u043b\u044e\u0447\u0438\u0442\u044c\u0441\u044f \u043a API",
+            subtitle: "\u041f\u0440\u043e\u0432\u0435\u0440\u044c\u0442\u0435, \u0447\u0442\u043e backend \u0437\u0430\u043f\u0443\u0449\u0435\u043d: python -m uvicorn api:app --reload",
             actionText: "Try again",
             onAction: loadSpecialistRequests
         }));
@@ -860,8 +882,8 @@ function renderSpecialistDetailState(type) {
     }
 
     specialistElements.detailContent.append(createSpecialistStateCard({
-        title: "Could not open request",
-        subtitle: "Check that backend is running and try again.",
+        title: "\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u043f\u043e\u0434\u043a\u043b\u044e\u0447\u0438\u0442\u044c\u0441\u044f \u043a API",
+        subtitle: "\u041f\u0440\u043e\u0432\u0435\u0440\u044c\u0442\u0435, \u0447\u0442\u043e backend \u0437\u0430\u043f\u0443\u0449\u0435\u043d: python -m uvicorn api:app --reload",
         actionText: "Back to requests",
         onAction: showSpecialistDashboard
     }));
@@ -957,6 +979,16 @@ function upsertSpecialistRequest(request) {
     } else {
         specialistState.requests.unshift(request);
     }
+}
+
+function mergeSpecialistRequestUpdate(payload, fallbackFields = {}) {
+    const responseRequest = extractSingleRequestFromPayload(payload);
+
+    return {
+        ...(specialistState.currentRequest || {}),
+        ...(responseRequest || {}),
+        ...fallbackFields
+    };
 }
 
 function getRequestApiId(request) {
@@ -1084,38 +1116,132 @@ function formatCreatedAt(request) {
         request && request.created
     );
 
-    if (!rawDate) {
-        return "Not provided";
+    return formatDisplayDate(rawDate);
+}
+
+function formatDisplayDate(value) {
+    const rawValue = getFirstString(value).trim();
+    const lumaDatePattern = /^\d{2}\.\d{2}\.\d{4}, \d{2}:\d{2}$/;
+
+    if (!rawValue) {
+        return "\u041d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e";
     }
 
-    const date = new Date(rawDate);
+    if (lumaDatePattern.test(rawValue)) {
+        return rawValue;
+    }
+
+    const date = new Date(rawValue);
 
     if (Number.isNaN(date.getTime())) {
-        return rawDate;
+        return "\u041d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e";
     }
 
-    return new Intl.DateTimeFormat("en", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
-    }).format(date);
+    return [
+        padDatePart(date.getDate()),
+        padDatePart(date.getMonth() + 1),
+        date.getFullYear()
+    ].join(".") + `, ${padDatePart(date.getHours())}:${padDatePart(date.getMinutes())}`;
+}
+
+function padDatePart(value) {
+    return String(value).padStart(2, "0");
 }
 
 function getTelegramUserId(request) {
     return getFirstString(
+        getTelegramProfile(request).id,
+        getTelegramProfile(request).user_id,
+        getTelegramProfile(request).userId,
         request && request.telegram_user_id,
         request && request.telegramUserId,
         request && request.telegram_id,
         request && request.telegramId,
         request && request.user_id,
         request && request.userId
-    ) || "Not provided";
+    ) || "\u041d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e";
+}
+
+function getTelegramUsername(request) {
+    const username = getFirstString(
+        getTelegramProfile(request).username,
+        request && request.telegram_username,
+        request && request.telegramUsername
+    );
+
+    if (!username) {
+        return "\u041d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e";
+    }
+
+    return username.startsWith("@") ? username : `@${username}`;
+}
+
+function getTelegramName(request) {
+    const profile = getTelegramProfile(request);
+    const firstName = getFirstString(profile.first_name, profile.firstName, request && request.telegram_first_name, request && request.telegramFirstName);
+    const lastName = getFirstString(profile.last_name, profile.lastName, request && request.telegram_last_name, request && request.telegramLastName);
+    const fullName = getFirstString(
+        profile.full_name,
+        profile.fullName,
+        profile.name,
+        request && request.telegram_name,
+        request && request.telegramName,
+        request && request.telegram_full_name,
+        request && request.telegramFullName,
+        [firstName, lastName].filter(Boolean).join(" ")
+    );
+
+    return fullName || "\u041d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e";
+}
+
+function getTelegramContactText(request) {
+    const username = getTelegramUsername(request);
+    const userId = getTelegramUserId(request);
+
+    if (username !== "\u041d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e") {
+        return username;
+    }
+
+    if (userId !== "\u041d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e") {
+        return `Telegram ID: ${userId}`;
+    }
+
+    return "\u041d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e";
+}
+
+function getTelegramProfileLink(request) {
+    const userId = getTelegramUserId(request);
+    const profileUrl = getFirstString(
+        getTelegramProfile(request).profile_url,
+        getTelegramProfile(request).profileUrl,
+        getTelegramProfile(request).url,
+        request && request.telegram_profile_url,
+        request && request.telegramProfileUrl,
+        request && request.telegram_url,
+        request && request.telegramUrl
+    );
+
+    if (userId === "\u041d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e") {
+        return "";
+    }
+
+    return profileUrl || `tg://user?id=${encodeURIComponent(userId)}`;
+}
+
+function getTelegramProfile(request) {
+    return getFirstObject(
+        request && request.telegram_profile,
+        request && request.telegramProfile,
+        request && request.telegram
+    );
 }
 
 function getFirstValue(...values) {
     return values.find((value) => value !== undefined && value !== null && value !== "");
+}
+
+function getFirstObject(...values) {
+    return values.find((value) => value && typeof value === "object" && !Array.isArray(value)) || {};
 }
 
 function getFirstString(...values) {
