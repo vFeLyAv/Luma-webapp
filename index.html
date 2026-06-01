@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#F4ECD8">
+    <title>Luma Mini App</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
+    <script src="./app.js" defer></script>
+</head>
+<body>
+    <main class="app-shell" aria-live="polite">
+        <section class="screen screen--splash is-active" data-screen="splash">
+            <div class="splash-content">
+                <div class="weather-art art--splash" aria-hidden="true">
+                    <div class="sun">
+                        <span class="ray ray--one"></span>
+                        <span class="ray ray--two"></span>
+                        <span class="ray ray--three"></span>
+                        <span class="ray ray--four"></span>
+                        <span class="ray ray--five"></span>
+                    </div>
+                    <div class="cloud">
+                        <span class="cloud-bump cloud-bump--one"></span>
+                        <span class="cloud-bump cloud-bump--two"></span>
+                        <span class="cloud-bump cloud-bump--three"></span>
+                    </div>
+                </div>
+                <h1 class="brand-name" data-i18n="brand"></h1>
+                <p class="brand-subtitle" data-i18n="splashSubtitle"></p>
+                <div class="loading-dots" aria-hidden="true">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="screen screen--home" data-screen="home">
+            <header class="home-top">
+                <span></span>
+                <label class="language-switcher">
+                    <span aria-hidden="true">🌐</span>
+                    <select id="languageSelect" aria-label="Language" data-i18n-aria="languageLabel">
+                        <option value="en">English</option>
+                        <option value="ru">Русский</option>
+                        <option value="uk">Українська</option>
+                        <option value="de">Deutsch</option>
+                        <option value="ar">العربية</option>
+                    </select>
+                </label>
+            </header>
+
+            <div class="home-copy">
+                <h2 data-i18n="homeTitle"></h2>
+                <p data-i18n="homeDescription"></p>
+            </div>
+
+            <div class="home-illustration" aria-hidden="true">
+                <div class="tiny-bird bird--one"></div>
+                <div class="tiny-bird bird--two"></div>
+                <div class="weather-art art--home">
+                    <div class="sun">
+                        <span class="ray ray--one"></span>
+                        <span class="ray ray--two"></span>
+                        <span class="ray ray--three"></span>
+                        <span class="ray ray--four"></span>
+                        <span class="ray ray--five"></span>
+                    </div>
+                    <div class="cloud">
+                        <span class="cloud-bump cloud-bump--one"></span>
+                        <span class="cloud-bump cloud-bump--two"></span>
+                        <span class="cloud-bump cloud-bump--three"></span>
+                    </div>
+                </div>
+                <div class="landscape">
+                    <span class="hill hill--left"></span>
+                    <span class="hill hill--right"></span>
+                    <span class="plant plant--left"></span>
+                    <span class="plant plant--right"></span>
+                </div>
+            </div>
+
+            <button class="primary-button" id="startButton" type="button" data-i18n="startButton"></button>
+            <p class="safe-note">
+                <span class="lock-mark" aria-hidden="true"></span>
+                <span data-i18n="safeNote"></span>
+            </p>
+        </section>
+
+        <section class="screen screen--form" data-screen="form">
+            <header class="form-top">
+                <button class="icon-button" id="backButton" type="button" aria-label="Back" data-i18n-aria="backLabel">‹</button>
+                <h2 data-i18n="formTitle"></h2>
+                <span></span>
+            </header>
+
+            <p class="screen-description" data-i18n="formDescription"></p>
+
+            <form class="request-form">
+                <label class="field-card">
+                    <span class="field-icon" aria-hidden="true">♙</span>
+                    <span class="field-body">
+                        <span class="field-label" data-i18n="nameLabel"></span>
+                        <input id="nameInput" type="text" autocomplete="name" data-i18n-placeholder="namePlaceholder">
+                    </span>
+                </label>
+
+                <label class="field-card">
+                    <span class="field-icon" aria-hidden="true">□</span>
+                    <span class="field-body">
+                        <span class="field-label" data-i18n="ageLabel"></span>
+                        <input id="ageInput" type="number" min="1" max="120" inputmode="numeric" data-i18n-placeholder="agePlaceholder">
+                    </span>
+                </label>
+
+                <label class="field-card field-card--textarea">
+                    <span class="field-icon" aria-hidden="true">♡</span>
+                    <span class="field-body">
+                        <span class="field-label" data-i18n="botherLabel"></span>
+                        <textarea id="botherInput" maxlength="300" rows="3" data-i18n-placeholder="botherPlaceholder"></textarea>
+                        <span class="counter" data-counter-for="botherInput">0/300</span>
+                    </span>
+                </label>
+
+                <label class="field-card field-card--textarea">
+                    <span class="field-icon" aria-hidden="true">✧</span>
+                    <span class="field-body">
+                        <span class="field-label" data-i18n="resultLabel"></span>
+                        <textarea id="resultInput" maxlength="300" rows="3" data-i18n-placeholder="resultPlaceholder"></textarea>
+                        <span class="counter" data-counter-for="resultInput">0/300</span>
+                    </span>
+                </label>
+            </form>
+
+            <button class="primary-button form-submit" id="prepareButton" type="button" data-i18n="prepareButton"></button>
+            <p class="safe-note">
+                <span class="lock-mark" aria-hidden="true"></span>
+                <span data-i18n="safeNote"></span>
+            </p>
+        </section>
+
+        <section class="screen screen--analysis" data-screen="analysis">
+            <div class="analysis-content">
+                <div class="weather-art art--analysis" aria-hidden="true">
+                    <div class="sun">
+                        <span class="ray ray--one"></span>
+                        <span class="ray ray--two"></span>
+                        <span class="ray ray--three"></span>
+                        <span class="ray ray--four"></span>
+                        <span class="ray ray--five"></span>
+                    </div>
+                    <div class="cloud">
+                        <span class="cloud-bump cloud-bump--one"></span>
+                        <span class="cloud-bump cloud-bump--two"></span>
+                        <span class="cloud-bump cloud-bump--three"></span>
+                    </div>
+                    <span class="sparkle sparkle--one">✦</span>
+                    <span class="sparkle sparkle--two">✦</span>
+                    <span class="sparkle sparkle--three">✦</span>
+                </div>
+
+                <div class="analysis-copy">
+                    <h2 data-i18n="analysisTitle"></h2>
+                    <p data-i18n="analysisDescription"></p>
+                </div>
+
+                <div class="progress-area">
+                    <div class="progress-track">
+                        <span class="progress-fill" id="progressFill"></span>
+                    </div>
+                    <strong id="progressValue">0%</strong>
+                </div>
+
+                <p class="small-note" data-i18n="analysisNote"></p>
+            </div>
+        </section>
+
+        <section class="screen screen--success" data-screen="success">
+            <div class="success-content">
+                <div class="success-icon" aria-hidden="true">
+                    <span class="success-ring"></span>
+                    <span class="success-check">✓</span>
+                    <span class="sparkle sparkle--one">✦</span>
+                    <span class="sparkle sparkle--two">✦</span>
+                    <span class="sparkle sparkle--three">✦</span>
+                    <span class="sparkle sparkle--four">✦</span>
+                </div>
+
+                <div class="success-copy">
+                    <h2 data-i18n="successTitle"></h2>
+                    <p data-i18n="successDescription"></p>
+                </div>
+
+                <div class="success-actions">
+                    <button class="primary-button" id="sendButton" type="button" data-i18n="sendButton"></button>
+                    <button class="secondary-button" id="againButton" type="button" data-i18n="againButton"></button>
+                    <p class="demo-message" id="demoMessage" hidden data-i18n="demoMessage"></p>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
