@@ -38,20 +38,16 @@ const fallbackTranslations = {
 let currentLanguage = defaultLanguage;
 let currentTranslations = fallbackTranslations;
 let progressAnimationId = null;
-let requestData = {
-    name: "",
-    age: "",
-    problem: "",
-    goal: "",
-    language: defaultLanguage
-};
+let requestData = null;
 
 const screens = document.querySelectorAll(".screen");
 const languageSelect = document.querySelector("#languageSelect");
 const progressFill = document.querySelector("#progressFill");
 const progressValue = document.querySelector("#progressValue");
 const demoMessage = document.querySelector("#demoMessage");
-const requiredRequestFieldsMessage = "Пожалуйста, заполните, что вас беспокоит и какого результата вы хотите.";
+const requiredRequestFieldsMessage = "\u041f\u043e\u0436\u0430\u043b\u0443\u0439\u0441\u0442\u0430, \u0437\u0430\u043f\u043e\u043b\u043d\u0438\u0442\u0435, \u0447\u0442\u043e \u0432\u0430\u0441 \u0431\u0435\u0441\u043f\u043e\u043a\u043e\u0438\u0442 \u0438 \u043a\u0430\u043a\u043e\u0433\u043e \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442\u0430 \u0432\u044b \u0445\u043e\u0442\u0438\u0442\u0435.";
+const requestNotFoundMessage = "\u0417\u0430\u044f\u0432\u043a\u0430 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u0430. \u041f\u043e\u0436\u0430\u043b\u0443\u0439\u0441\u0442\u0430, \u043d\u0430\u0447\u043d\u0438\u0442\u0435 \u0437\u0430\u043d\u043e\u0432\u043e.";
+const formMessage = createFormMessage();
 
 // Telegram injects this object only inside the real Mini App environment.
 if (window.Telegram && window.Telegram.WebApp) {
@@ -146,7 +142,10 @@ function connectButtons() {
     });
 
     document.querySelector("#prepareButton").addEventListener("click", () => {
-        saveRequestData();
+        if (!saveRequestData()) {
+            return;
+        }
+
         showScreen("analysis");
         startAnalysis();
     });
@@ -167,49 +166,47 @@ function connectButtons() {
 }
 
 function saveRequestData() {
-    requestData = getRequestDataFromForm();
+    const nextRequestData = getRequestDataFromForm();
+
+    if (!nextRequestData.problem || !nextRequestData.goal) {
+        showFormMessage(requiredRequestFieldsMessage);
+        return false;
+    }
+
+    requestData = nextRequestData;
+    hideFormMessage();
+    demoMessage.hidden = true;
+
+    return true;
 }
 
 function getRequestDataFromForm() {
     const { nameInput, ageInput, problemInput, goalInput } = getFormElements();
 
     return {
+        type: "wellness_request",
         name: getTrimmedInputValue(nameInput),
         age: getTrimmedInputValue(ageInput),
         problem: getTrimmedInputValue(problemInput),
         goal: getTrimmedInputValue(goalInput),
-        language: currentLanguage
+        language: currentLanguage,
+        createdAt: new Date().toISOString()
     };
 }
 
 function sendRequestToSpecialist() {
-    const name = document.getElementById("nameInput").value.trim();
-    const age = document.getElementById("ageInput").value.trim();
-    const problem = document.getElementById("problemInput").value.trim();
-    const goal = document.getElementById("goalInput").value.trim();
-
-    if (!problem || !goal) {
+    if (!requestData) {
         demoMessage.hidden = false;
-        demoMessage.textContent = "Пожалуйста, заполните, что вас беспокоит и какого результата вы хотите.";
+        demoMessage.textContent = requestNotFoundMessage;
         return;
     }
 
-    const payload = {
-        type: "wellness_request",
-        name,
-        age,
-        problem,
-        goal,
-        language: currentLanguage,
-        createdAt: new Date().toISOString()
-    };
-
-    console.log("Luma payload before send:", payload);
+    console.log("Luma saved requestData:", requestData);
 
     if (window.Telegram && window.Telegram.WebApp) {
-        window.Telegram.WebApp.sendData(JSON.stringify(payload));
+        window.Telegram.WebApp.sendData(JSON.stringify(requestData));
     } else {
-        alert(JSON.stringify(payload, null, 2));
+        alert(JSON.stringify(requestData, null, 2));
     }
 
     demoMessage.hidden = false;
@@ -227,6 +224,28 @@ function getFormElements() {
 
 function getTrimmedInputValue(input) {
     return input ? input.value.trim() : "";
+}
+
+function createFormMessage() {
+    const prepareButton = document.querySelector("#prepareButton");
+    const message = document.createElement("p");
+
+    message.className = "demo-message";
+    message.hidden = true;
+
+    prepareButton.insertAdjacentElement("afterend", message);
+
+    return message;
+}
+
+function showFormMessage(message) {
+    formMessage.textContent = message;
+    formMessage.hidden = false;
+}
+
+function hideFormMessage() {
+    formMessage.hidden = true;
+    formMessage.textContent = "";
 }
 
 function connectCounters() {
@@ -284,13 +303,8 @@ function resetForm() {
     document.querySelector("#ageInput").value = "";
     document.querySelector("#problemInput").value = "";
     document.querySelector("#goalInput").value = "";
-    requestData = {
-        name: "",
-        age: "",
-        problem: "",
-        goal: "",
-        language: currentLanguage
-    };
+    requestData = null;
+    hideFormMessage();
 
     document.querySelectorAll("[data-counter-for]").forEach((counter) => {
         counter.textContent = "0/300";
