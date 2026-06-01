@@ -31,7 +31,8 @@ const fallbackTranslations = {
     successDescription: "Your request is ready to be sent to a specialist.",
     sendButton: "Send to specialist",
     againButton: "Start again",
-    demoMessage: "This is a demo for now. Later the request will be sent to a specialist."
+    demoMessage: "This is a demo for now. Later the request will be sent to a specialist.",
+    requiredRequestFieldsMessage: "Please fill in what bothers you and what result you want before sending."
 };
 
 let currentLanguage = defaultLanguage;
@@ -165,16 +166,33 @@ function connectButtons() {
 }
 
 function saveRequestData() {
-    requestData = {
-        name: document.querySelector("#nameInput").value.trim(),
-        age: document.querySelector("#ageInput").value.trim(),
-        problem: document.querySelector("#botherInput").value.trim(),
-        goal: document.querySelector("#resultInput").value.trim(),
+    requestData = getRequestDataFromForm();
+}
+
+function getRequestDataFromForm() {
+    const nameInput = document.querySelector("#nameInput");
+    const ageInput = document.querySelector("#ageInput");
+    const botherInput = document.querySelector("#botherInput");
+    const resultInput = document.querySelector("#resultInput");
+
+    return {
+        name: nameInput.value.trim(),
+        age: ageInput.value.trim(),
+        problem: botherInput.value.trim(),
+        goal: resultInput.value.trim(),
         language: currentLanguage
     };
 }
 
 function sendRequestToSpecialist() {
+    requestData = getRequestDataFromForm();
+
+    if (!requestData.problem || !requestData.goal) {
+        demoMessage.hidden = false;
+        demoMessage.textContent = translate("requiredRequestFieldsMessage");
+        return;
+    }
+
     const payload = {
         type: "wellness_request",
         name: requestData.name,
@@ -184,6 +202,8 @@ function sendRequestToSpecialist() {
         language: requestData.language,
         createdAt: new Date().toISOString()
     };
+
+    console.log(payload);
 
     if (window.Telegram && window.Telegram.WebApp) {
         window.Telegram.WebApp.sendData(JSON.stringify(payload));
